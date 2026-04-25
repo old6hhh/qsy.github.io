@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>焦炫玮 | 个人简历与作品集</title>
+    <style>
+        /* =========================================================
+           全局与色彩基调：现代简约 + 活力色彩
+           ========================================================= */
+        :root {
+            --bg-body: #f4f7f9;          /* 整体浅灰背景 */
+            --bg-card: #ffffff;          /* 卡片纯白背景 */
+            --text-main: #1e293b;        /* 主标题与正文深色 */
+            --text-muted: #64748b;       /* 副标题与辅助说明文本 */
+            
+            /* 活力点缀色 */
+            --color-primary: #3b82f6;    /* 科技蓝 */
+            --color-success: #10b981;    /* 翡翠绿 */
+            --color-warning: #f59e0b;    /* 活力橙 */
+            --color-accent: #8b5cf6;     /* 优雅紫 */
+            
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* =========================================================
+           布局框架：侧边导航 + 主内容区
+           ========================================================= */
+        .app-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 侧边导航栏 */
+        .sidebar {
+            width: 260px;
+            background-color: var(--bg-card);
+            box-shadow: var(--shadow-sm);
+            padding: 2.5rem 1.5rem;
+            position: fixed;
+            height: 100vh;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .brand h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.85rem 1.2rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .nav-link:hover {
+            background-color: #f1f5f9;
+            color: var(--color-primary);
+            transform: translateX(6px);
+        }
+        .nav-link.active {
+            background-color: var(--color-primary);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            transform: translateX(6px);
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 3rem 4rem;
+            max-width: 1100px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeUp 0.4s ease forwards;
+        }
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 2.5rem;
+            color: var(--text-main);
+            display: inline-block;
+            position: relative;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50%;
+            height: 4px;
+            background: var(--color-primary);
+            border-radius: 2px;
+        }
+
+        /* 移动端菜单按钮 */
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            right: 1.5rem;
+            z-index: 100;
+            background: var(--color-primary);
+            color: #fff;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* =========================================================
+           一、 首页简介 (Profile)
+           ========================================================= */
+        .profile-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 3rem;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        /* 头像与占位符探测逻辑样式 */
+        .avatar-wrapper {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.15);
+            border: 4px solid #fff;
+        }
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none; /* 初始隐藏，由JS控制 */
+        }
+        .avatar-fallback {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #64748b;
+            display: flex; /* 初始显示 */
+        }
+
+        .profile-info h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+        .tagline {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.1);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+        }
+        .bio {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            text-align: justify;
+        }
+
+        /* =========================================================
+           二、 项目与实习 (Experience Timeline)
+           ========================================================= */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e2e8f0;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 3rem;
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+        .timeline-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        /* 时间轴圆点，赋予不同活力色 */
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: -2.4rem;
+            top: 2rem;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #fff;
+            border: 4px solid var(--dot-color, var(--color-primary));
+        }
+
+        .time-badge {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .exp-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 0.3rem;
+        }
+        .exp-role {
+            font-size: 1rem;
+            color: var(--dot-color, var(--color-primary));
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .exp-details {
+            list-style-type: none;
+        }
+        .exp-details li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+        .exp-details li::before {
+            content: '▹';
+            position: absolute;
+            left: 0;
+            color: var(--dot-color, var(--color-primary));
+            font-weight: bold;
+        }
+
+        /* =========================================================
+           三、 教育背景 (Education)
+           ========================================================= */
+        .edu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .edu-card {
+            background: var(--bg-card);
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border-top: 5px solid var(--color-primary);
+            transition: var(--transition);
+        }
+        .edu-card:hover {
+            transform: translateY(-5px);
+        }
+        .edu-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        .edu-meta {
+            color: var(--color-primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        /* =========================================================
+           四、 技能特长 (Skills)
+           ========================================================= */
+        .skills-container {
+            background: var(--bg-card);
+            padding: 3rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+        .skill-group {
+            margin-bottom: 2.5rem;
+        }
+        .skill-group h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            color: var(--text-main);
+            border-left: 4px solid var(--color-primary);
+            padding-left: 0.8rem;
+        }
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .skill-item {
+            margin-bottom: 0.5rem;
+        }
+        .skill-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .progress-bg {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            border-radius: 4px;
+            width: 0; /* 初始为0，JS触发动画 */
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* =========================================================
+           五、 荣誉奖项 (Honors)
+           ========================================================= */
+        .honor-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .honor-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            transition: var(--transition);
+        }
+        .honor-card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+        .honor-icon {
+            font-size: 2rem;
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--color-warning);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .honor-content h4 {
+            font-size: 1.15rem;
+            margin-bottom: 0.3rem;
+        }
+        .honor-content p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* =========================================================
+           响应式适配 (Mobile & Tablet)
+           ========================================================= */
+        @media (max-width: 992px) {
+            .app-wrapper { flex-direction: column; }
+            .sidebar {
+                transform: translateX(-100%);
+                width: 250px;
+            }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 4.5rem 2rem 2rem 2rem;
+            }
+            .mobile-toggle {
+                display: block;
+            }
+            .profile-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
+            }
+        }
+        @media (max-width: 600px) {
+            .main-content { padding: 4.5rem 1rem 1rem 1rem; }
+            .profile-card, .timeline-item, .edu-card, .skills-container, .honor-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="mobile-toggle" onclick="toggleMobileMenu()">☰ 菜单</button>
+
+    <div class="app-wrapper">
+        <nav class="sidebar" id="sidebar">
+            <div class="brand">
+                <h2>JiaoXuanwei.Portfolio</h2>
+            </div>
+            <ul class="nav-menu">
+                <li><a class="nav-link active" onclick="switchSection('profile', this)">首页 / 简介</a></li>
+                <li><a class="nav-link" onclick="switchSection('experience', this)">实习 / 项目 (Co-op)</a></li>
+                <li><a class="nav-link" onclick="switchSection('education', this)">教育背景</a></li>
+                <li><a class="nav-link" onclick="switchSection('skills', this)">技能特长</a></li>
+                <li><a class="nav-link" onclick="switchSection('honors', this)">证书 / 荣誉</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            
+            <section id="profile" class="section active">
+                <div class="profile-card">
+                    <div class="avatar-wrapper">
+                        <span class="avatar-fallback" id="avatarFallback">焦</span>
+                        <img id="avatarImg" class="avatar-img" alt="焦炫玮的头像">
+                    </div>
+                    <div class="profile-info">
+                        <h1>焦炫玮</h1>
+                        <span class="tagline">AI 算法应用工程师</span>
+                        <p class="bio">
+                            作为一名拥有机械工程底色的技术实践者，我致力于探索前沿算法在自动驾驶与工业智能领域的落地应用。在四段核心Co-op实训中，我积累了极具竞争力的跨界研发经验：不仅掌握了自动驾驶场景下的3D目标检测技术，还深入实践了基于 BEV（鸟瞰图）架构的自动驾驶感知与场景理解，并能通过低代码开发实现系统的快速迭代与交付。从机械原理的底层解构到复杂算法的现场部署，我打通了端到端的工程闭环，期待在智能化时代持续释放技术价值。
+                        </p>
+                         <div class="contact-info" style="margin-top: 1.8rem; display: flex; gap: 2rem; flex-wrap: wrap; background: rgba(59, 130, 246, 0.05); padding: 1rem 1.5rem; border-radius: var(--radius-md); border: 1px solid rgba(59, 130, 246, 0.1);">
+                        <div style="display: flex; align-items: center; gap: 0.6rem; color: var(--text-main); font-weight: 600; font-size: 1.05rem;">
+                         <span>📞</span>
+                        <span>13357791222</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.6rem; color: var(--text-main); font-weight: 600; font-size: 1.05rem;">
+                     <span>✉️</span>
+                  <span>jiaoxi@mail.uc.edu</span>
+               </div>
+           </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="experience" class="section">
+                <h2 class="section-title">核心实习与项目</h2>
+                <div class="timeline">
+                    
+                    <div class="timeline-item" style="--dot-color: var(--color-primary);">
+                        <span class="time-badge">2025.01 - 2025.04 | 第四次 Co-op</span>
+                        <h3 class="exp-title">重庆大学机械与运载工程学院</h3>
+                        <div class="exp-role">科研实习生</div>
+                        <ul class="exp-details">
+                            <li><strong>顶刊论文精读与复现：</strong> 深度精读并分析数十篇中科院1区顶刊论文，涵盖 BEV 感知、多传感器融合等前沿领域；独立复现多项核心算法，深入理解其数理建模与工程实现细节。</li>
+                            <li><strong>BEV 技术深度综述：</strong> 系统性完成了自动驾驶鸟瞰图（BEV）感知方案的文献综述，深入调研了空间变换、时序融合及特征提取等关键技术演进脉络，产出了高质量调研报告。</li>
+                            <li><strong>DualBEV 模型改进：</strong> 针对 DualBEV 架构进行深入研究与代码修改，优化了其空间转换层与视角关联逻辑，探索了在复杂路况下感知精度与计算效率的平衡点。</li>
+                        </ul>
+                    </div>
+
+                    <div class="timeline-item" style="--dot-color: var(--color-success);">
+                        <span class="time-badge">2025.09 - 2025.12 | 第三次 Co-op</span>
+                        <h3 class="exp-title">南京西门子</h3>
+                        <div class="exp-role">IT部门实习生</div>
+                        <ul class="exp-details">
+                            <li><strong>企业级系统敏捷研发：</strong> 深入公司数字化转型进程，熟练运用 <strong>Mendix</strong> 平台主导开发“Outing”出游管理系统。通过模块化设计，实现了包含路线投票、一键报名、行程资源管理等五大核心模块的一体化流程，大幅提升了企业活动组织效率。</li>
+                            <li><strong>复杂底层逻辑攻坚：</strong> 在 CheckTrack 项目中独立攻克 Evidence 上传/下载的技术难点，深入剖析并重构底层微流（Microflow）逻辑。针对用户新需求，成功构建数据关系映射模型，实现了高鲁棒性的 Excel 数据自动化导入功能。</li>
+                             <li><strong>AI 赋能数字化开发：</strong> 创新性地将 DeepSeek 等 AI 工具深度融入低代码开发链路。通过高阶 Prompt 提问技巧与 AI 进行逻辑交互，快速攻克数据交互异常、微流逻辑优化等技术瓶颈，显著提升了代码构建质量与交付速率。</li>
+                             <img src="西门子低代码项目截图.png" alt="西门子低代码项目截图" style="max-width: 100%; border-radius: 12px; margin-top: 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); display: block; border: 1px solid #e2e8f0; image-rendering: -webkit-optimize-contrast;">
+                        </ul>
+                    </div>
+
+                    <div class="timeline-item" style="--dot-color: var(--color-warning);">
+                        <span class="time-badge">2024.05 - 2024.08 | 第二次 Co-op</span>
+                        <h3 class="exp-title">南京西门子</h3>
+                        <div class="exp-role">IT部门实习生</div>
+                        <ul class="exp-details">
+                            <li><strong>企业级低代码开发：</strong> 深入参与西门子内部数字化转型实践。熟练运用 <strong>Mendix</strong> 平台进行系统建模、微流（Microflow）逻辑设计及页面开发，实现业务需求的敏捷响应与快速交付。</li>
+                             <li><strong>“设备借用”管理系统主导：</strong> 独立负责公司级“设备借用”管理项目的全生命周期开发。通过模块化设计实现了资产实时追踪、多级审批流自动化及用户权限管理，显著提升了部门间资源调配的效率。</li>
+                              <li><strong>IT 流程与数字化协同：</strong> 在跨国企业标准 IT 框架下开展工作，负责前端交互优化与后台数据逻辑集成；通过低代码平台打通业务痛点，产出了具有高易用性的数字化工具。</li>
+                        </ul>
+                    </div>
+
+                    <div class="timeline-item" style="--dot-color: var(--color-accent);">
+                        <span class="time-badge">2024.01 - 2024.04 | 第一次 Co-op</span>
+                        <h3 class="exp-title">重庆大学机械与运载工程学院</h3>
+                        <div class="exp-role">科研实习生（齿轮故障）</div>
+                        <ul class="exp-details">
+                            <li><strong>软硬协同交互：</strong>负责第三代智能二维上肢康复机器人(KF-3)的控制界面搭建，基于 C# 实现双伺服电机运动系统的医疗引导交互模拟。</li>
+                            <li><strong>底层硬件调试：</strong>搭建底层模拟电路，独立排查并解决数据采集卡(MP4623)驱动冲突及步进电机细分速率衰减问题，实现力学传感信号的高精采集。</li>
+                        </ul>
+                    </div>
+                    
+                    
+
+                </div>
+            </section>
+
+            <section id="education" class="section">
+                <h2 class="section-title">教育背景</h2>
+                <div class="edu-grid">
+                    <div class="edu-card">
+                        <h3>重庆大学 - 辛辛那提大学联合学院 (JCI)</h3>
+                        <div class="edu-meta">机械设计制造及其自动化 | 本科</div>
+                        <p><strong>时间：</strong> 2022.09 - 2026.06</p>
+                        <p><strong>核心课程：</strong> 微积分I(满绩)、固体力学(满绩)、机械原理(满绩)、Matlab编程、流体力学、信号系统控制等。</p>
+                        <p><strong>学生工作：</strong> ME01学习委员，UC联合学院综合事务处副部长。</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="skills" class="section">
+                <h2 class="section-title">专业技能</h2>
+                <div class="skills-container">
+                    
+                    <div class="skill-group">
+                        <h3>算法与软件开发 (Hard Skills)</h3>
+                        <div class="skills-grid">
+                            <div class="skill-item">
+                                <div class="skill-info"><span>大语言模型应用 (LLM / Prompt / Agent)</span> <span>95%</span></div>
+                                <div class="progress-bg"><div class="progress-bar" style="background-color: var(--color-primary);" data-width="95%"></div></div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-info"><span>Python / C++ / C# 编程开发</span> <span>88%</span></div>
+                                <div class="progress-bg"><div class="progress-bar" style="background-color: var(--color-primary);" data-width="88%"></div></div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-info"><span>深度学习与强化学习 (LSTM/Transformer/PPO)</span> <span>85%</span></div>
+                                <div class="progress-bg"><div class="progress-bar" style="background-color: var(--color-primary);" data-width="85%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-group">
+                        <h3>工程建模与质量控制 (Engineering)</h3>
+                        <div class="skills-grid">
+                            <div class="skill-item">
+                                <div class="skill-info"><span>MATLAB 数值仿真与数据清洗</span> <span>92%</span></div>
+                                <div class="progress-bg"><div class="progress-bar" style="background-color: var(--color-success);" data-width="92%"></div></div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-info"><span>质量管理与数理分析 (SPC/MSA/Minitab)</span> <span>90%</span></div>
+                                <div class="progress-bg"><div class="progress-bar" style="background-color: var(--color-success);" data-width="90%"></div></div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-info"><span>3D 结构建模 (SolidWorks / UG-NX)</span> <span>88%</span></div>
+                                <div class="progress-bg"><div class="progress-bar" style="background-color: var(--color-success);" data-width="88%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-group" style="margin-bottom: 0;">
+                        <h3>综合软实力 (Soft Skills)</h3>
+                        <div class="skills-grid">
+                            <div class="skill-item">
+                                <div class="skill-info"><span>跨学科知识整合与应用落地</span> <span>95%</span></div>
+                                <div class="progress-bg"><div class="progress-bar" style="background-color: var(--color-warning);" data-width="95%"></div></div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-info"><span>英语专业文献检索与技术写作 (CET-4/CET-6)</span> <span>90%</span></div>
+                                <div class="progress-bg"><div class="progress-bar" style="background-color: var(--color-warning);" data-width="90%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <section id="honors" class="section">
+                              <h2 class="section-title">证书与荣誉</h2>
+                               <div class="honor-list">
+                                  <div class="honor-card">
+                                 <div class="honor-icon">🎓</div>
+                                <div class="honor-content">
+                                 <h4>学业表彰与奖学金</h4>
+                                <p>连续三学年荣获重庆大学奖学金。</p>
+            </div>
+        </div>
+
+        <div class="honor-card">
+            <div class="honor-icon" style="color: var(--color-success); background: rgba(16, 185, 129, 0.1);">📈</div>
+            <div class="honor-content">
+                <h4>重庆大学数学建模竞赛二等奖</h4>
+                <p>带领团队通过跨学科建模与分析，解决复杂问题，展现优秀的数学应用与团队协作能力。</p>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+        </main>
+    </div>
+
+    <script>
+        // --- 1. 栏目切换逻辑 (单页应用 SPA) ---
+        function switchSection(sectionId, element) {
+            // 隐藏所有区块
+            document.querySelectorAll('.section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            // 移除所有导航项的激活状态
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // 显示目标区块并高亮导航
+            document.getElementById(sectionId).classList.add('active');
+            element.classList.add('active');
+
+            // 如果在移动端，切换后自动收起菜单
+            if (window.innerWidth <= 992) {
+                document.getElementById('sidebar').classList.remove('mobile-open');
+            }
+
+            // 如果切换到技能区，触发进度条动画
+            if (sectionId === 'skills') {
+                triggerSkillAnimation();
+            }
+        }
+
+        // 移动端菜单开关
+        function toggleMobileMenu() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
+
+        // 技能进度条动画
+        function triggerSkillAnimation() {
+            const bars = document.querySelectorAll('.progress-bar');
+            bars.forEach(bar => {
+                bar.style.width = '0'; // 重置
+                setTimeout(() => {
+                    bar.style.width = bar.getAttribute('data-width');
+                }, 100);
+            });
+        }
+
+        // --- 2. 图片格式探测逻辑 (高可用设计) ---
+        function probeAvatar() {
+            const imgElement = document.getElementById('avatarImg');
+            const fallbackElement = document.getElementById('avatarFallback');
+            const fileExtensions = ['png', 'jpg', 'jpeg'];
+            const basePath = 'avatar.'; // 寻找同目录下的图片
+            let currentIndex = 0;
+
+            function tryLoadImage() {
+                // 如果所有格式都尝试失败，保留 CSS 占位符
+                if (currentIndex >= fileExtensions.length) {
+                    imgElement.style.display = 'none';
+                    fallbackElement.style.display = 'flex';
+                    return;
+                }
+
+                const testUrl = basePath + fileExtensions[currentIndex];
+                const tempImage = new Image();
+
+                // 成功加载
+                tempImage.onload = function() {
+                    imgElement.src = testUrl;
+                    imgElement.style.display = 'block';
+                    fallbackElement.style.display = 'none';
+                };
+
+                // 加载失败，尝试下一种后缀
+                tempImage.onerror = function() {
+                    currentIndex++;
+                    tryLoadImage();
+                };
+
+                // 触发加载
+                tempImage.src = testUrl;
+            }
+
+            // 启动探测
+            tryLoadImage();
+        }
+
+        // 页面加载完成后执行探测
+        window.addEventListener('DOMContentLoaded', probeAvatar);
+    </script>
+</body>
+</html>
